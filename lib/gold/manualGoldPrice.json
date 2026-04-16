@@ -1,0 +1,22 @@
+{
+  "source": "Manual fallback data",
+  "sourceUrl": "https://ideabeam.com/finance/gold-price-in-sri-lanka/",
+  "effectiveDate": "2026-04-16T00:00:00.000Z",
+  "prices": [
+    {
+      "carat": "24K",
+      "gram": 34450,
+      "pawn": 275600
+    },
+    {
+      "carat": "22K",
+      "gram": 31580,
+      "pawn": 252640
+    },
+    {
+      "carat": "21K",
+      "gram": 30120,
+      "pawn": 240960
+    }
+  ]
+}
