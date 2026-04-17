@@ -2,147 +2,622 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Fonts ── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&display=swap');
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=Jost:wght@300;400;500&display=swap');
 
 /* ── Keyframes ── */
-@keyframes jewelry-spin-cw   { to { transform: rotate(360deg);  } }
-@keyframes jewelry-spin-ccw  { to { transform: rotate(-360deg); } }
-@keyframes jewelry-spin-diag { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
-@keyframes jewelry-pulse     { 0%,100%{ opacity:.18 } 50%{ opacity:.38 } }
-@keyframes jewelry-float1    { 0%,100%{ transform: translateY(0) translateX(0) } 33%{ transform: translateY(-18px) translateX(8px) } 66%{ transform: translateY(10px) translateX(-6px) } }
-@keyframes jewelry-float2    { 0%,100%{ transform: translateY(0) translateX(0) } 50%{ transform: translateY(-24px) translateX(12px) } }
-@keyframes jewelry-float3    { 0%,100%{ transform: translateY(0) } 40%{ transform: translateY(14px) } 80%{ transform: translateY(-10px) } }
-@keyframes jewelry-shimmer   { 0%{ background-position: -200% center } 100%{ background-position: 200% center } }
-@keyframes jewelry-fade-up   { from{ opacity:0; transform:translateY(28px) } to{ opacity:1; transform:translateY(0) } }
-@keyframes jewelry-glow      { 0%,100%{ box-shadow:0 0 20px rgba(201,168,76,.12) } 50%{ box-shadow:0 0 44px rgba(201,168,76,.28) } }
-@keyframes jewelry-star      { 0%{ transform:scale(0) rotate(0deg); opacity:0 } 60%{ opacity:1 } 100%{ transform:scale(1) rotate(720deg); opacity:.85 } }
-@keyframes jewelry-border-flow { 0%{ opacity:.3 } 50%{ opacity:.8 } 100%{ opacity:.3 } }
+@keyframes fade-up    { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes halo-pulse { 0%,100% { opacity:.5; transform:translateX(-50%) scale(1); } 50% { opacity:1; transform:translateX(-50%) scale(1.12); } }
+@keyframes logo-entrance { from { opacity:0; transform:translateY(-10px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes orb-drift { from { transform:translateX(-50%) scale(1); } to { transform:translateX(-50%) scale(1.15) translateY(18px); } }
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+@keyframes float { 0%,100% { transform:translateY(0) scale(1); opacity:.5; } 50% { transform:translateY(-16px) scale(1.4); opacity:.9; } }
+@keyframes spin-slow { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+@keyframes glow-pulse { 0%,100% { box-shadow:0 0 20px rgba(201,168,76,.1); } 50% { box-shadow:0 0 40px rgba(201,168,76,.25); } }
+@keyframes border-shimmer { 0%,100% { opacity:.3; } 50% { opacity:.9; } }
 
-/* ── Page shell ── */
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+html, body {
+  background: #0d0b09;
+  color: #e8dfc8;
+  font-family: 'Jost', 'Inter', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0d0b09; }
+::-webkit-scrollbar-thumb { background: #2e2415; border-radius: 2px; }
+
+/* ══════════════════════════════════════════════
+   PAGE SHELL
+══════════════════════════════════════════════ */
 .jewelry-page {
   position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-  background: #0c0a06;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  padding: 4rem 1.5rem;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: #0d0b09;
 }
-@media (min-width: 768px) { .jewelry-page { padding: 5rem 2.5rem; } }
 
-/* ── Ring canvas ── */
-.jewelry-rings {
-  position: absolute;
+/* ── Ambient background ── */
+.jewelry-ambient {
+  position: fixed;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
-  overflow: hidden;
 }
 
-.ring {
+.ambient-orb {
   position: absolute;
   border-radius: 50%;
-  border-style: solid;
-  border-color: rgba(201,168,76,.13);
+  filter: blur(90px);
 }
-.ring.rdash { border-style: dashed; border-color: rgba(201,168,76,.07); }
 
-.r1 { width:520px; height:520px; top:-160px; left:-180px; border-width:1px;  animation: jewelry-spin-cw   28s linear infinite; }
-.r2 { width:340px; height:340px; top:-80px;  left:-80px;  border-width:.5px; animation: jewelry-spin-ccw  20s linear infinite; }
-.r3 { width:680px; height:680px; top:30px;   right:-340px;border-width:1px;  animation: jewelry-spin-ccw  38s linear infinite; }
-.r4 { width:420px; height:420px; top:80px;   right:-210px;border-width:.5px; animation: jewelry-spin-cw   22s linear infinite; }
-.r5 { width:260px; height:260px; bottom:-100px; left:10%; border-width:.8px; animation: jewelry-spin-diag 32s linear infinite; }
-.r6 { width:180px; height:180px; bottom:-60px;  left:18%; border-width:.5px; animation: jewelry-spin-ccw  18s linear infinite; }
-.r7 { width:900px; height:900px; bottom:-500px; right:-300px; border-width:.5px; border-color:rgba(201,168,76,.04); animation: jewelry-spin-cw 55s linear infinite; }
+.ambient-orb.orb-1 {
+  width: 700px; height: 500px;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(201,168,76,.07) 0%, transparent 70%);
+  animation: orb-drift 20s ease-in-out infinite alternate;
+  opacity: .6;
+}
+.ambient-orb.orb-2 {
+  width: 450px; height: 450px;
+  bottom: 5%; right: -120px;
+  background: radial-gradient(circle, rgba(201,168,76,.04) 0%, transparent 70%);
+  opacity: .4;
+}
+.ambient-orb.orb-3 {
+  width: 350px; height: 350px;
+  bottom: 20%; left: -100px;
+  background: radial-gradient(circle, rgba(148,109,56,.04) 0%, transparent 70%);
+  opacity: .3;
+}
 
-/* ── Particles ── */
-.particle { position:absolute; width:2px; height:2px; background:#c9a84c; border-radius:50%; opacity:.4; }
-.p1 { top:22%; left:15%; animation: jewelry-float1 7s ease-in-out infinite; }
-.p2 { top:55%; left:8%;  animation: jewelry-float2 9s ease-in-out infinite; opacity:.25; }
-.p3 { top:18%; right:20%;animation: jewelry-float3 6s ease-in-out infinite; width:3px; height:3px; }
-.p4 { top:70%; right:15%;animation: jewelry-float1 8s ease-in-out infinite 2s; opacity:.3; }
-.p5 { top:40%; left:50%; animation: jewelry-float2 11s ease-in-out infinite 1s; opacity:.2; }
-.p6 { top:80%; left:35%; animation: jewelry-float3 7s ease-in-out infinite 3s; }
+.grain-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
 
-/* ── Glow orbs ── */
-.glow-orb { position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; }
-.orb1 { width:500px; height:400px; top:-80px;  left:-100px; background:rgba(201,168,76,.05); animation: jewelry-pulse 6s ease-in-out infinite; }
-.orb2 { width:400px; height:350px; top:100px; right:-120px; background:rgba(201,168,76,.04); animation: jewelry-pulse 9s ease-in-out infinite 3s; }
+/* ── Decorative rings — hidden (used from jewelry.css) ── */
+.jewelry-rings { display: none; }
 
-/* ── Edge lines ── */
+/* ── Edge accent lines ── */
 .top-line, .bot-line {
-  position:absolute; left:0; right:0; height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),transparent);
-  animation: jewelry-border-flow 3s ease-in-out infinite;
+  position: fixed;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,.4) 40%, rgba(201,168,76,.4) 60%, transparent 100%);
+  z-index: 10;
+  opacity: .3;
 }
-.top-line { top:0; }
-.bot-line { bottom:0; animation-duration:4s; animation-delay:1.5s; opacity:.7; }
+.top-line { top: 0; }
+.bot-line { bottom: 0; }
 
-/* ── Content wrapper ── */
+/* ══════════════════════════════════════════════
+   CONTENT WRAPPER — tight, no wasted space
+══════════════════════════════════════════════ */
 .jewelry-content {
   position: relative;
-  z-index: 2;
-  max-width: 72rem;
+  z-index: 5;
+  max-width: 1600px;
+  width: 100%;
   margin: 0 auto;
+  padding: 0 40px 40px;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 0;
 }
 
-/* ── Header ── */
+/* ══════════════════════════════════════════════
+   HEADER — compact hero
+══════════════════════════════════════════════ */
 .jewelry-header {
+  position: relative;
+  text-align: center;
+  padding: 28px 0 18px;
+  animation: fade-up .6s ease both;
+}
+
+.logo-halo {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,.1) 0%, transparent 70%);
+  pointer-events: none;
+  animation: halo-pulse 4s ease-in-out infinite;
+}
+
+.brand-logo-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 16px rgba(201,168,76,.28)) drop-shadow(0 0 4px rgba(201,168,76,.12));
+  animation: logo-entrance .9s cubic-bezier(.22,1,.36,1) both;
+}
+
+.brand-logo {
+  width: clamp(80px, 10vw, 110px);
+  height: auto;
+  display: block;
+}
+
+.brand-tagline {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .32em;
+  color: rgba(90,78,56,.9);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  animation: fade-up 1s .25s ease both;
+}
+
+.hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.4rem, 3.5vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: .03em;
+  color: #e8dfc8;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  animation: fade-up 1s .3s ease both;
+}
+
+.hero-subtitle {
+  font-size: clamp(.82rem, 1.3vw, .95rem);
+  color: rgba(168,152,120,.75);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+  animation: fade-up 1s .4s ease both;
+}
+
+/* ══════════════════════════════════════════════
+   LIVE BADGE (timestamp / live indicator)
+══════════════════════════════════════════════ */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.7);
+  border: .5px solid rgba(201,168,76,.18);
+  border-radius: 20px;
+  padding: 4px 12px;
+  margin-top: 10px;
+  animation: fade-up 1s .5s ease both;
+}
+.live-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #5aae7a;
+  box-shadow: 0 0 6px #5aae7a;
+  animation: border-shimmer 2s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════
+   DIVIDER
+══════════════════════════════════════════════ */
+.jewelry-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 18px;
+  animation: fade-up 1s .5s ease both;
+  opacity: .6;
+}
+.jewelry-divider.footer-div { margin: 20px 0 14px; opacity:.4; }
+
+.div-line { flex:1; height:.5px; background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent); }
+.div-diamond {
+  width: 7px; height: 7px;
+  border: .5px solid rgba(201,168,76,.7);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(201,168,76,.2);
+}
+.div-diamond.sm { width:4px; height:4px; }
+
+/* ══════════════════════════════════════════════
+   PRICE GRID — compact 3-column
+══════════════════════════════════════════════ */
+.price-section {
+  animation: fade-up .7s .5s ease both;
+  margin-bottom: 16px;
+}
+
+/* ══════════════════════════════════════════════
+   CALCULATOR SECTION
+══════════════════════════════════════════════ */
+.calc-section {
+  animation: fade-up .7s .7s ease both;
+}
+
+/* ══════════════════════════════════════════════
+   ERROR STATE
+══════════════════════════════════════════════ */
+.jewelry-error {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  animation: jewelry-fade-up .9s ease both;
+  gap: 10px;
+  text-align: center;
+  padding: 40px 24px;
+  font-size: 13px;
+  color: rgba(168,152,120,.7);
+  line-height: 1.7;
+  animation: fade-up .8s ease both;
 }
+.error-icon { font-size: 24px; color: rgba(122,106,74,.8); display:block; }
 
-.ornament { display:flex; align-items:center; gap:12px; }
-.orn-line   { height:1px; width:48px; background:linear-gradient(90deg,transparent,rgba(201,168,76,.7)); }
-.orn-line-r { background:linear-gradient(90deg,rgba(201,168,76,.7),transparent); }
-
-.star-icon {
-  fill: #c9a84c;
-  animation: jewelry-star 1.2s cubic-bezier(.34,1.56,.64,1) .3s both;
-}
-
-/* ── Divider ── */
-.jewelry-divider { display:flex; align-items:center; gap:16px; opacity:.45; }
-.div-line    { flex:1; height:.5px; background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent); }
-.div-diamond { width:6px; height:6px; background:#c9a84c; transform:rotate(45deg); flex-shrink:0; }
-
-/* ── Error box ── */
-.jewelry-error {
-  border: 1px solid rgba(220,60,60,.25);
-  background: rgba(80,10,10,.35);
-  border-radius: 1rem;
-  padding: 1.25rem 1.5rem;
-  font-size: 0.9rem;
-  color: rgba(255,150,150,.75);
-  letter-spacing: .02em;
-  animation: jewelry-fade-up .9s ease .2s both;
-}
-
-/* ── Footer ── */
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
 .jewelry-footer {
+  text-align: center;
+  padding: 16px 0 12px;
+  animation: fade-up 1s 1s ease both;
+  border-top: .5px solid rgba(201,168,76,.1);
+  margin-top: 12px;
+}
+
+.footer-badge {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(90,78,56,.8);
+  border: .5px solid rgba(90,78,56,.3);
+  border-radius: 3px;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+}
+
+.footer-title {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(122,106,74,.8);
+  margin-bottom: 5px;
+}
+
+.footer-body {
+  font-size: 11px;
+  color: rgba(58,50,37,.9);
+  line-height: 1.7;
+  max-width: 340px;
+  margin: 0 auto 8px;
+  font-style: italic;
+}
+
+.footer-brand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 300;
+  letter-spacing: .22em;
+  color: rgba(122,106,74,.65);
+}
+
+/* ══════════════════════════════════════════════
+   PRICE CARD — dark luxury style (override Tailwind)
+══════════════════════════════════════════════ */
+.gold-price-card {
   position: relative;
   overflow: hidden;
-  background: #14110a;
-  border: 1px solid rgba(201,168,76,.15);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  animation: jewelry-fade-up .9s ease .5s both;
+  background: linear-gradient(135deg, #1a1510 0%, #141008 100%);
+  border: .5px solid rgba(201,168,76,.16);
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: border-color .25s, transform .25s, box-shadow .25s;
 }
-.jewelry-footer::after {
-  content:'';
-  position:absolute; top:0; left:0; right:0; height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);
+.gold-price-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.3), transparent);
 }
-.footer-badge {
-  position:absolute; top:1rem; right:1.25rem;
-  font-size:9px; letter-spacing:.25em; color:rgba(201,168,76,.25);
-  text-transform:uppercase; font-family:'Cinzel',serif;
+.gold-price-card:hover {
+  border-color: rgba(201,168,76,.32);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 20px rgba(201,168,76,.08);
 }
-.footer-title { font-family:'Cinzel',serif; font-size:13px; letter-spacing:.15em; color:#c9a84c; font-weight:600; }
-.footer-body  { font-size:14px; color:rgba(168,144,96,.75); line-height:1.7; margin-top:.75rem; font-style:italic; }
-.footer-brand { font-family:'Cinzel',serif; font-size:9px; letter-spacing:.3em; color:rgba(201,168,76,.3); text-transform:uppercase; margin-top:1rem; }
+
+.gold-price-card .karat-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.55);
+  margin-bottom: 10px;
+}
+
+.gold-price-card .karat-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: #e8dfc8;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+
+.gold-price-card .price-row {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(0,0,0,.3);
+  border-radius: 7px;
+  border: .5px solid rgba(201,168,76,.1);
+}
+
+.gold-price-card .price-row + .price-row { margin-top: 6px; }
+
+.gold-price-card .price-unit {
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(168,152,120,.55);
+  margin-bottom: 2px;
+}
+
+.gold-price-card .price-amount {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: rgba(201,168,76,.9);
+  line-height: 1.2;
+}
+
+/* ══════════════════════════════════════════════
+   CALCULATOR — dark luxury
+══════════════════════════════════════════════ */
+.calc-wrapper {
+  background: linear-gradient(135deg, #131008 0%, #0f0d07 100%);
+  border: .5px solid rgba(201,168,76,.14);
+  border-radius: 12px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.calc-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.22), transparent);
+}
+
+.calc-title {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.55);
+  margin-bottom: 4px;
+}
+
+.calc-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #e8dfc8;
+  margin-bottom: 4px;
+  letter-spacing: .02em;
+}
+
+.calc-sub {
+  font-size: 12px;
+  color: rgba(168,152,120,.6);
+  margin-bottom: 16px;
+}
+
+.calc-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.calc-field label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(168,152,120,.6);
+  margin-bottom: 5px;
+}
+
+.calc-select,
+.calc-input {
+  width: 100%;
+  background: rgba(0,0,0,.45);
+  border: .5px solid rgba(201,168,76,.14);
+  border-radius: 7px;
+  color: #e8dfc8;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.calc-select:focus,
+.calc-input:focus {
+  border-color: rgba(201,168,76,.35);
+  box-shadow: 0 0 0 2px rgba(201,168,76,.06);
+}
+.calc-select option { background: #131008; color: #e8dfc8; }
+
+/* Extra charges */
+.extra-charges-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.extra-charges-label {
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(168,152,120,.55);
+}
+.btn-add-charge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .06em;
+  color: rgba(201,168,76,.75);
+  border: .5px solid rgba(201,168,76,.2);
+  border-radius: 6px;
+  padding: 5px 12px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.btn-add-charge:hover {
+  border-color: rgba(201,168,76,.45);
+  color: rgba(201,168,76,1);
+  background: rgba(201,168,76,.04);
+}
+
+.charge-row {
+  display: grid;
+  grid-template-columns: 1fr 180px 80px;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.btn-remove {
+  background: rgba(180,40,40,.08);
+  border: .5px solid rgba(180,40,40,.2);
+  border-radius: 6px;
+  color: rgba(200,100,100,.7);
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  padding: 0 8px;
+}
+.btn-remove:hover {
+  background: rgba(180,40,40,.15);
+  color: rgba(230,120,120,.9);
+}
+
+.no-charges-msg {
+  font-size: 11px;
+  color: rgba(90,78,56,.8);
+  font-style: italic;
+  padding: 6px 0;
+}
+
+/* Result panel */
+.calc-result-panel {
+  margin-top: 14px;
+  padding: 16px 18px;
+  background: rgba(0,0,0,.35);
+  border: .5px solid rgba(201,168,76,.2);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.calc-result-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.35), transparent);
+  animation: border-shimmer 3s ease-in-out infinite;
+}
+
+.calc-breakdown {
+  font-size: 12px;
+  color: rgba(168,152,120,.65);
+  line-height: 1.9;
+}
+.calc-breakdown span { color: rgba(201,168,76,.8); }
+
+.calc-total-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(168,152,120,.55);
+  margin-top: 12px;
+}
+
+.calc-total-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 400;
+  color: rgba(201,168,76,.95);
+  line-height: 1.1;
+  letter-spacing: .02em;
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, rgba(201,168,76,.15) 0%, rgba(201,168,76,.08) 100%);
+  border: .5px solid rgba(201,168,76,.35);
+  border-radius: 8px;
+  color: rgba(201,168,76,.9);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+.btn-download:hover {
+  background: linear-gradient(135deg, rgba(201,168,76,.25) 0%, rgba(201,168,76,.15) 100%);
+  border-color: rgba(201,168,76,.6);
+  box-shadow: 0 0 20px rgba(201,168,76,.12);
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (min-width: 1400px) {
+  .jewelry-content { padding: 0 60px 40px; }
+}
+
+@media (min-width: 1800px) {
+  .jewelry-content { padding: 0 80px 40px; }
+}
+
+@media (max-width: 700px) {
+  .jewelry-content { padding: 0 14px 32px; gap: 0; }
+  .calc-fields-grid { grid-template-columns: 1fr; }
+  .charge-row { grid-template-columns: 1fr 140px 70px; }
+  .hero-title { font-size: 1.6rem; }
+  .brand-logo { width: 80px; }
+  .jewelry-header { padding: 20px 0 14px; }
+}
+
+@media (max-width: 480px) {
+  .charge-row { grid-template-columns: 1fr; }
+  .calc-fields-grid { grid-template-columns: 1fr; }
+}

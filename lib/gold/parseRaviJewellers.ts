@@ -38,29 +38,33 @@ function buildPricesFrom22K(base22KValue: number): GoldPriceItem[] {
   // Ravi page usually gives one 22KT market value.
   // If value is very large, treat it as pawn value; otherwise as gram value.
   const isPawnLikeValue = base22KValue > 100000;
+  const pawn22KRaw = isPawnLikeValue ? base22KValue : base22KValue * 8;
   const gram22K = isPawnLikeValue ? base22KValue / 8 : base22KValue;
-  const pawn22K = isPawnLikeValue ? base22KValue : base22KValue * 8;
 
-  const gram24K = gram22K * (24 / 22);
-  const gram21K = gram22K * (21 / 22);
+  // Ravi provides only 22K, so estimate 24K/21K by purity ratio.
+  // Round pawn values to common market buckets shown by local jewellers.
+  const roundPawn = (value: number) => Math.round(value / 10000) * 10000;
+  const roundGram = (value: number) => Number(value.toFixed(2));
 
-  const round = (value: number) => Number(value.toFixed(2));
+  const pawn22K = isPawnLikeValue ? pawn22KRaw : roundPawn(pawn22KRaw);
+  const pawn24K = roundPawn(pawn22KRaw * (24 / 22));
+  const pawn21K = roundPawn(pawn22KRaw * (21 / 22));
 
   return [
     {
       carat: "24K",
-      gram: round(gram24K),
-      pawn: round(gram24K * 8),
+      gram: roundGram(pawn24K / 8),
+      pawn: pawn24K,
     },
     {
       carat: "22K",
-      gram: round(gram22K),
-      pawn: round(pawn22K),
+      gram: roundGram(gram22K),
+      pawn: pawn22K,
     },
     {
       carat: "21K",
-      gram: round(gram21K),
-      pawn: round(gram21K * 8),
+      gram: roundGram(pawn21K / 8),
+      pawn: pawn21K,
     },
   ];
 }

@@ -1,8 +1,10 @@
-import { PageHeader } from "@/components/PageHeader";
 import { PriceGrid } from "@/components/PriceGrid";
 import { ProductPriceCalculator } from "@/components/ProductPriceCalculator";
+import { MouseGlow } from "@/components/MouseGlow";
 import type { GoldPriceResponse } from "@/types/gold";
 import { headers } from "next/headers";
+import Image from "next/image";
+import logo from "@/logo.svg";
 
 async function fetchGoldPrices(): Promise<GoldPriceResponse> {
   const requestHeaders = headers();
@@ -33,26 +35,18 @@ export default async function Home() {
 
     return (
       <main className="jewelry-page">
-        {/* ── Animated ring layer ── */}
-        <div className="jewelry-rings" aria-hidden="true">
-          <div className="ring r1" />
-          <div className="ring r2 rdash" />
-          <div className="ring r3" />
-          <div className="ring r4 rdash" />
-          <div className="ring r5" />
-          <div className="ring r6 rdash" />
-          <div className="ring r7" />
-          <div className="particle p1" />
-          <div className="particle p2" />
-          <div className="particle p3" />
-          <div className="particle p4" />
-          <div className="particle p5" />
-          <div className="particle p6" />
-          <div className="glow-orb orb1" />
-          <div className="glow-orb orb2" />
+        {/* ── Mouse glow ── */}
+        <MouseGlow />
+
+        {/* ── Ambient background ── */}
+        <div className="jewelry-ambient" aria-hidden="true">
+          <div className="ambient-orb orb-1" />
+          <div className="ambient-orb orb-2" />
+          <div className="ambient-orb orb-3" />
+          <div className="grain-overlay" />
         </div>
 
-        {/* Edge accent lines */}
+        {/* ── Edge lines ── */}
         <div className="top-line" aria-hidden="true" />
         <div className="bot-line" aria-hidden="true" />
 
@@ -60,17 +54,24 @@ export default async function Home() {
 
           {/* ── Header ── */}
           <header className="jewelry-header">
-            <div className="ornament">
-              <span className="orn-line" />
-              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" className="star-icon">
-                <polygon points="10,1 12.5,7.5 19,7.5 13.8,11.8 15.9,18.5 10,14.5 4.1,18.5 6.2,11.8 1,7.5 7.5,7.5" />
-              </svg>
-              <span className="orn-line orn-line-r" />
+            <div className="logo-halo" aria-hidden="true" />
+            <div className="brand-logo-wrap">
+              <Image
+                src={logo}
+                alt="Wijesinghe Jewelers logo"
+                className="brand-logo"
+                priority
+              />
             </div>
-            <PageHeader
-              title="Wijesinghe Jewelers"
-              subtitle="Modern gold rate dashboard for 24K, 22K, and 21K prices in Sri Lanka."
-            />
+            <p className="brand-tagline">Est. Sri Lanka &nbsp;·&nbsp; Live Gold Prices</p>
+            <h1 className="hero-title">Today&apos;s Sri Lanka Gold Rates</h1>
+            <p className="hero-subtitle">
+              Live 24K, 22K and 21K prices with a quick product price calculator.
+            </p>
+            <div className="live-badge">
+              <span className="live-dot" />
+              Live Rates
+            </div>
           </header>
 
           {/* ── Divider ── */}
@@ -83,6 +84,7 @@ export default async function Home() {
           {/* ── Prices ── */}
           {goldPrice.status === "error" || goldPrice.prices.length === 0 ? (
             <section className="jewelry-error">
+              <span className="error-icon">◇</span>
               We could not refresh live prices right now. Please try again in a few minutes.
             </section>
           ) : (
@@ -94,6 +96,11 @@ export default async function Home() {
 
           {/* ── Footer ── */}
           <footer className="jewelry-footer">
+            <div className="jewelry-divider footer-div" aria-hidden="true">
+              <span className="div-line" />
+              <span className="div-diamond sm" />
+              <span className="div-line" />
+            </div>
             <span className="footer-badge">Est. Sri Lanka</span>
             <p className="footer-title">Disclaimer</p>
             <p className="footer-body">
@@ -108,32 +115,41 @@ export default async function Home() {
   } catch {
     return (
       <main className="jewelry-page">
-        <div className="jewelry-rings" aria-hidden="true">
-          <div className="ring r1" /><div className="ring r2 rdash" />
-          <div className="ring r3" /><div className="ring r4 rdash" />
-          <div className="ring r5" /><div className="ring r6 rdash" />
-          <div className="glow-orb orb1" /><div className="glow-orb orb2" />
+        <div className="jewelry-ambient" aria-hidden="true">
+          <div className="ambient-orb orb-1" />
+          <div className="ambient-orb orb-2" />
+          <div className="grain-overlay" />
         </div>
         <div className="top-line" aria-hidden="true" />
         <div className="bot-line" aria-hidden="true" />
 
         <div className="jewelry-content">
           <header className="jewelry-header">
-            <div className="ornament">
-              <span className="orn-line" />
-              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" className="star-icon">
-                <polygon points="10,1 12.5,7.5 19,7.5 13.8,11.8 15.9,18.5 10,14.5 4.1,18.5 6.2,11.8 1,7.5 7.5,7.5" />
-              </svg>
-              <span className="orn-line orn-line-r" />
+            <div className="logo-halo" aria-hidden="true" />
+            <div className="brand-logo-wrap">
+              <Image
+                src={logo}
+                alt="Wijesinghe Jewelers logo"
+                className="brand-logo"
+                priority
+              />
             </div>
-            <PageHeader
-              title="Wijesinghe Jewelers"
-              subtitle="Modern gold rate dashboard for 24K, 22K, and 21K prices in Sri Lanka."
-            />
+            <p className="brand-tagline">Est. Sri Lanka &nbsp;·&nbsp; Live Gold Prices</p>
+            <h1 className="hero-title">Today&apos;s Sri Lanka Gold Rates</h1>
+            <p className="hero-subtitle">
+              Live 24K, 22K and 21K prices with a quick product price calculator.
+            </p>
           </header>
 
+          <div className="jewelry-divider" aria-hidden="true">
+            <span className="div-line" />
+            <span className="div-diamond" />
+            <span className="div-line" />
+          </div>
+
           <section className="jewelry-error">
-            Something went wrong while loading the gold prices. Please refresh the page.
+            <span className="error-icon">◇</span>
+            Something went wrong while loading gold prices. Please refresh the page.
           </section>
 
           <footer className="jewelry-footer">
