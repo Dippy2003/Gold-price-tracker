@@ -8,7 +8,7 @@ type PriceGridProps = {
 export function PriceGrid({ prices }: PriceGridProps) {
   return (
     <section className="price-section">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="price-grid-container">
         {prices.map((item) => (
           <GoldPriceCard key={item.carat} item={item} />
         ))}

@@ -1,4 +1,4 @@
-export type SupportedCarat = "24K" | "22K" | "21K";
+export type SupportedCarat = "24K" | "22K" | "21K" | "18K";
 
 export type GoldPriceItem = {
   carat: SupportedCarat;

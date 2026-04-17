@@ -326,6 +326,7 @@ export function ProductPriceCalculator({ prices }: ProductPriceCalculatorProps) 
               <option value="24K">24K</option>
               <option value="22K">22K</option>
               <option value="21K">21K</option>
+              <option value="18K">18K</option>
             </select>
           </div>
 

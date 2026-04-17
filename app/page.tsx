@@ -66,7 +66,7 @@ export default async function Home() {
             <p className="brand-tagline">Est. Sri Lanka &nbsp;·&nbsp; Live Gold Prices</p>
             <h1 className="hero-title">Today&apos;s Sri Lanka Gold Rates</h1>
             <p className="hero-subtitle">
-              Live 24K, 22K and 21K prices with a quick product price calculator.
+              Live 24K, 22K, 21K and 18K prices with a quick product price calculator.
             </p>
             <div className="live-badge">
               <span className="live-dot" />
@@ -137,7 +137,7 @@ export default async function Home() {
             <p className="brand-tagline">Est. Sri Lanka &nbsp;·&nbsp; Live Gold Prices</p>
             <h1 className="hero-title">Today&apos;s Sri Lanka Gold Rates</h1>
             <p className="hero-subtitle">
-              Live 24K, 22K and 21K prices with a quick product price calculator.
+              Live 24K, 22K, 21K and 18K prices with a quick product price calculator.
             </p>
           </header>
 

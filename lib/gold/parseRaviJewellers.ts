@@ -49,6 +49,7 @@ function buildPricesFrom22K(base22KValue: number): GoldPriceItem[] {
   const pawn22K = isPawnLikeValue ? pawn22KRaw : roundPawn(pawn22KRaw);
   const pawn24K = roundPawn(pawn22KRaw * (24 / 22));
   const pawn21K = roundPawn(pawn22KRaw * (21 / 22));
+  const pawn18K = roundPawn(pawn22KRaw * (18 / 22));
 
   return [
     {
@@ -65,6 +66,11 @@ function buildPricesFrom22K(base22KValue: number): GoldPriceItem[] {
       carat: "21K",
       gram: roundGram(pawn21K / 8),
       pawn: pawn21K,
+    },
+    {
+      carat: "18K",
+      gram: roundGram(pawn18K / 8),
+      pawn: pawn18K,
     },
   ];
 }
@@ -105,6 +111,6 @@ export async function parseRaviJewellers(): Promise<RaviJewellersParseResult> {
     sourceUrl: RAVI_JEWELLERS_URL,
     effectiveDate: parseLatestDate(text),
     prices: buildPricesFrom22K(numeric22K),
-    note: "Parsed from Ravi Jewellers 22KT value; 24K and 21K are estimated by purity ratio.",
+    note: "Parsed from Ravi Jewellers 22KT value; 24K, 21K, and 18K are estimated by purity ratio.",
   };
 }
