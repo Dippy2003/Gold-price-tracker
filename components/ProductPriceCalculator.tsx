@@ -18,6 +18,7 @@ type ProductPriceCalculatorProps = {
 export function ProductPriceCalculator({ prices }: ProductPriceCalculatorProps) {
   const [carat, setCarat] = useState<SupportedCarat>("22K");
   const [grams, setGrams] = useState<number>(1);
+  const [milligrams, setMilligrams] = useState<number>(0);
   const [makingCost, setMakingCost] = useState<number>(0);
   const [extraCharges, setExtraCharges] = useState<ExtraCharge[]>([]);
 
@@ -29,7 +30,8 @@ export function ProductPriceCalculator({ prices }: ProductPriceCalculatorProps) 
     return extraCharges.reduce((sum, charge) => sum + (charge.amount || 0), 0);
   }, [extraCharges]);
 
-  const goldValue = selectedRatePerGram * (grams || 0);
+  const totalGrams = (grams || 0) + (milligrams || 0) / 1000;
+  const goldValue = selectedRatePerGram * totalGrams;
   const total = goldValue + (makingCost || 0) + extraTotal;
 
   function parseNumberInput(value: string): number {
@@ -204,7 +206,7 @@ export function ProductPriceCalculator({ prices }: ProductPriceCalculatorProps) 
     // Making cost + extra charges are included in the total but hidden from the customer.
     const rows: [string, string][] = [
       ["Gold Type / Carat",        carat],
-      ["Gold Weight",              `${grams || 0} g`],
+      ["Gold Weight",              `${totalGrams.toFixed(3)} g`],
       [`Rate per Gram (${carat})`, formatLkr(selectedRatePerGram)],
       ["Gold Value",               formatLkr(goldValue)],
     ];
@@ -340,6 +342,18 @@ export function ProductPriceCalculator({ prices }: ProductPriceCalculatorProps) 
           </div>
 
           <div className="calc-field">
+            <label htmlFor="calc-milligrams">Gold Weight (mg)</label>
+            <input
+              id="calc-milligrams"
+              type="text"
+              inputMode="decimal"
+              value={milligrams}
+              onChange={(event) => setMilligrams(parseNumberInput(event.target.value))}
+              className="calc-input"
+            />
+          </div>
+
+          <div className="calc-field">
             <label htmlFor="calc-making">Making / Build Cost (LKR)</label>
             <input
               id="calc-making"
@@ -396,7 +410,7 @@ export function ProductPriceCalculator({ prices }: ProductPriceCalculatorProps) 
         {/* ── Result panel ── */}
         <div className="calc-result-panel">
           <div className="calc-breakdown">
-            <div>Gold Value: {selectedRatePerGram.toLocaleString()} × {grams || 0}g = <span>LKR {goldValue.toLocaleString()}</span></div>
+            <div>Gold Value: {selectedRatePerGram.toLocaleString()} × {totalGrams.toFixed(3)}g = <span>LKR {goldValue.toLocaleString()}</span></div>
             <div>Making Cost: <span>LKR {(makingCost || 0).toLocaleString()}</span></div>
             <div>Extra Charges: <span>LKR {extraTotal.toLocaleString()}</span></div>
           </div>
