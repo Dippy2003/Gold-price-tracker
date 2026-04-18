@@ -20,7 +20,7 @@ async function fetchGoldPrices(): Promise<GoldPriceResponse> {
     apiUrl,
     process.env.NODE_ENV === "development"
       ? { cache: "no-store" }
-      : { next: { revalidate: 1800 } },
+      : { next: { revalidate: 300 } }, // Reduced to 5 minutes for testing
   );
 
   if (!response.ok)
