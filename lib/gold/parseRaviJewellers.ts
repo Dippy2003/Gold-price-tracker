@@ -47,9 +47,9 @@ function buildPricesFrom22K(base22KValue: number): GoldPriceItem[] {
   const roundGram = (value: number) => Number(value.toFixed(2));
 
   const pawn22K = isPawnLikeValue ? pawn22KRaw : roundPawn(pawn22KRaw);
-  const pawn24K = roundPawn(pawn22KRaw * (24 / 22));
+  const pawn24K = pawn22KRaw * (24 / 22);
   const pawn21K = roundPawn(pawn22KRaw * (21 / 22));
-  const pawn18K = roundPawn(pawn22KRaw * (18 / 22));
+  const pawn18K = pawn22KRaw * (18 / 22);
 
   return [
     {
