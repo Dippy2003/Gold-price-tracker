@@ -9,7 +9,20 @@ type SourceInfoProps = {
 
 function formatDate(value: string): string {
   const parsed = new Date(value);
-  return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString();
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  // Fixed locale/timeZone so server-rendered and hydrated client text always match,
+  // regardless of the host machine's default locale.
+  return parsed.toLocaleString("en-GB", {
+    timeZone: "Asia/Colombo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
 }
 
 export function SourceInfo({ source, sourceUrl, effectiveDate, fetchedAt, note }: SourceInfoProps) {

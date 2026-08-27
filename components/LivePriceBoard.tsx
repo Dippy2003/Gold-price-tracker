@@ -44,7 +44,9 @@ export function LivePriceBoard({ initialData }: LivePriceBoardProps) {
   const [trends, setTrends] = useState<Partial<Record<SupportedCarat, Trend>>>({});
   const [justUpdated, setJustUpdated] = useState(false);
   const [checkedAt, setCheckedAt] = useState<string>(initialData.fetchedAt);
-  const [nowTick, setNowTick] = useState<number>(Date.now());
+  // Seed with checkedAt's own timestamp (not Date.now()) so the server-rendered
+  // and hydrated client markup start identical ("just now") and never mismatch.
+  const [nowTick, setNowTick] = useState<number>(() => new Date(initialData.fetchedAt).getTime());
   const previousPricesRef = useRef<GoldPriceItem[] | null>(initialData.prices);
 
   useEffect(() => {
