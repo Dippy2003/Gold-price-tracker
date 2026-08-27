@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getGoldPrice } from "@/lib/gold/getGoldPrice";
 
-// Revalidate this route every 30 minutes.
-export const revalidate = 1800;
+// Revalidate this route every minute so the live dashboard stays fresh.
+export const revalidate = 60;
 
 export async function GET() {
   try {

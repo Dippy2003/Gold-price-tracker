@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import "../jewelry.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "WIjesinghe Jewelers",
-  description: "Modern gold rate dashboard for WIjesinghe Jewelers.",
+  title: "Wijesinghe Jewelers — Live Gold Rates",
+  description: "Real-time 24K, 22K, and 21K gold price dashboard for Wijesinghe Jewelers, Sri Lanka.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#08070a",
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

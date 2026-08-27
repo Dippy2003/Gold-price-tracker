@@ -38,101 +38,69 @@ function buildPricesFrom22K(base22KValue: number): GoldPriceItem[] {
   // Ravi page usually gives one 22KT market value.
   // If value is very large, treat it as pawn value; otherwise as gram value.
   const isPawnLikeValue = base22KValue > 100000;
-  const pawn22KRaw = isPawnLikeValue ? base22KValue : base22KValue * 8;
   const gram22K = isPawnLikeValue ? base22KValue / 8 : base22KValue;
+  const pawn22K = isPawnLikeValue ? base22KValue : base22KValue * 8;
 
-  // Ravi provides only 22K, so estimate 24K/21K by purity ratio.
-  // Round pawn values to common market buckets shown by local jewellers.
-  const roundPawn = (value: number) => Math.round(value / 10000) * 10000;
-  const roundGram = (value: number) => Number(value.toFixed(2));
+  const gram24K = gram22K * (24 / 22);
+  const gram21K = gram22K * (21 / 22);
 
-  const pawn22K = isPawnLikeValue ? pawn22KRaw : roundPawn(pawn22KRaw);
-  const pawn24K = pawn22KRaw * (24 / 22);
-  const pawn21K = roundPawn(pawn22KRaw * (21 / 22));
-  const pawn18K = pawn22KRaw * (18 / 22);
+  const round = (value: number) => Number(value.toFixed(2));
 
   return [
     {
       carat: "24K",
-      gram: roundGram(pawn24K / 8),
-      pawn: pawn24K,
+      gram: round(gram24K),
+      pawn: round(gram24K * 8),
     },
     {
       carat: "22K",
-      gram: roundGram(gram22K),
-      pawn: pawn22K,
+      gram: round(gram22K),
+      pawn: round(pawn22K),
     },
     {
       carat: "21K",
-      gram: roundGram(pawn21K / 8),
-      pawn: pawn21K,
-    },
-    {
-      carat: "18K",
-      gram: roundGram(pawn18K / 8),
-      pawn: pawn18K,
+      gram: round(gram21K),
+      pawn: round(gram21K * 8),
     },
   ];
 }
 
 export async function parseRaviJewellers(): Promise<RaviJewellersParseResult> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-  try {
-    const response = await fetch(RAVI_JEWELLERS_URL, {
-      next: { revalidate: 1800 },
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-      },
-      signal: controller.signal,
-    });
-    
-    clearTimeout(timeoutId);
+  const response = await fetch(RAVI_JEWELLERS_URL, {
+    next: { revalidate: 60 },
+  });
 
   if (!response.ok) {
     throw new Error(`Ravi Jewellers request failed with status ${response.status}`);
   }
 
   const html = await response.text();
-    if (!html) {
-      throw new Error("Ravi Jewellers page returned empty HTML");
-    }
-
-    const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-    const priceRegex = /22KT?\s*LKR\s*([0-9][0-9,\.]*)/gi;
-    let latest22K: string | null = null;
-    let priceMatch: RegExpExecArray | null = null;
-
-    while ((priceMatch = priceRegex.exec(text)) !== null) {
-      latest22K = priceMatch[1];
-    }
-
-    if (!latest22K) {
-      throw new Error("Could not find 22KT LKR value on Ravi Jewellers page");
-    }
-
-    const numeric22K = toNumber(latest22K);
-    if (!numeric22K || numeric22K <= 0) {
-      throw new Error("Invalid 22KT LKR value on Ravi Jewellers page");
-    }
-
-    return {
-      sourceUrl: RAVI_JEWELLERS_URL,
-      effectiveDate: parseLatestDate(text),
-      prices: buildPricesFrom22K(numeric22K),
-      note: "Parsed from Ravi Jewellers 22KT value; 24K, 21K, and 18K are estimated by purity ratio.",
-    };
-  } catch (error) {
-    clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Request to Ravi Jewellers timed out after 10 seconds');
-    }
-    throw error;
+  if (!html) {
+    throw new Error("Ravi Jewellers page returned empty HTML");
   }
+
+  const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const priceRegex = /22KT?\s*LKR\s*([0-9][0-9,\.]*)/gi;
+  let latest22K: string | null = null;
+  let priceMatch: RegExpExecArray | null = null;
+
+  while ((priceMatch = priceRegex.exec(text)) !== null) {
+    latest22K = priceMatch[1];
+  }
+
+  if (!latest22K) {
+    throw new Error("Could not find 22KT LKR value on Ravi Jewellers page");
+  }
+
+  const numeric22K = toNumber(latest22K);
+  if (!numeric22K || numeric22K <= 0) {
+    throw new Error("Invalid 22KT LKR value on Ravi Jewellers page");
+  }
+
+  return {
+    sourceUrl: RAVI_JEWELLERS_URL,
+    effectiveDate: parseLatestDate(text),
+    prices: buildPricesFrom22K(numeric22K),
+    note: "Parsed from Ravi Jewellers 22KT value; 24K and 21K are estimated by purity ratio.",
+  };
 }

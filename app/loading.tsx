@@ -1,19 +1,34 @@
-import Image from "next/image";
-import vector from "@/Vector.svg";
-
 export default function Loading() {
   return (
-    <main className="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-hidden bg-[#f5f0ea]/75 backdrop-blur-md">
-      <div className="relative flex h-44 w-44 items-center justify-center">
-        <div className="absolute h-32 w-32 rounded-full bg-white/70 blur-sm" />
-        <div className="relative flex h-28 w-28 items-center justify-center">
-          <Image
-            src={vector}
-            alt="Loading"
-            priority
-            className="h-16 w-16 select-none object-contain opacity-95 animate-spin"
-          />
+    <main className="jewelry-page">
+      <div className="jewelry-ambient" aria-hidden="true">
+        <div className="ambient-orb orb-1" />
+        <div className="ambient-orb orb-2" />
+      </div>
+      <div className="jewelry-content" style={{ animation: "none" }}>
+        <div
+          style={{
+            height: 140,
+            borderRadius: "var(--radius-lg)",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+          }}
+          className="animate-pulse"
+        />
+        <div className="price-grid">
+          <div className="price-card animate-pulse" style={{ height: 150 }} />
+          <div className="price-card animate-pulse" style={{ height: 150 }} />
+          <div className="price-card animate-pulse" style={{ height: 150 }} />
         </div>
+        <div
+          className="animate-pulse"
+          style={{
+            height: 220,
+            borderRadius: "var(--radius-lg)",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+          }}
+        />
       </div>
     </main>
   );

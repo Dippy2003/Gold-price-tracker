@@ -2,687 +2,420 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Google Fonts ── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=Jost:wght@300;400;500&display=swap');
+/* ── Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ── Keyframes ── */
-@keyframes fade-up    { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes halo-pulse { 0%,100% { opacity:.5; transform:translateX(-50%) scale(1); } 50% { opacity:1; transform:translateX(-50%) scale(1.12); } }
-@keyframes logo-entrance { from { opacity:0; transform:translateY(-10px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
-@keyframes orb-drift { from { transform:translateX(-50%) scale(1); } to { transform:translateX(-50%) scale(1.15) translateY(18px); } }
-@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-@keyframes float { 0%,100% { transform:translateY(0) scale(1); opacity:.5; } 50% { transform:translateY(-16px) scale(1.4); opacity:.9; } }
-@keyframes spin-slow { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-@keyframes glow-pulse { 0%,100% { box-shadow:0 0 20px rgba(201,168,76,.1); } 50% { box-shadow:0 0 40px rgba(201,168,76,.25); } }
-@keyframes border-shimmer { 0%,100% { opacity:.3; } 50% { opacity:.9; } }
+/* ── Tokens ───────────────────────────────────────────── */
+:root {
+  --gold: #d4af5a;
+  --gold-light: #f0d488;
+  --gold-dim: #8a7645;
+  --gold-glow: rgba(212, 175, 90, 0.16);
 
-/* ── Reset & base ── */
-*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  --bg-base: #08070a;
+  --bg-surface: #0f0e12;
+  --bg-card: rgba(255, 255, 255, 0.035);
+  --bg-card-hover: rgba(255, 255, 255, 0.06);
 
-html, body {
-  background: #0d0b09;
-  color: #e8dfc8;
-  font-family: 'Jost', 'Inter', sans-serif;
-  font-weight: 300;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100dvh;
+  --text-primary: #f3efe6;
+  --text-secondary: #a9a3b0;
+  --text-muted: #6d6877;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-gold: rgba(212, 175, 90, 0.35);
+
+  --up: #4ade80;
+  --down: #f87171;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
 }
 
-/* ── Custom scrollbar ── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #0d0b09; }
-::-webkit-scrollbar-thumb { background: #2e2415; border-radius: 2px; }
+* {
+  box-sizing: border-box;
+}
 
-/* ══════════════════════════════════════════════
-   PAGE SHELL
-══════════════════════════════════════════════ */
+html,
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+/* ── Keyframes ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+}
+@keyframes shimmer-flash {
+  0% { background-color: rgba(212, 175, 90, 0.16); }
+  100% { background-color: transparent; }
+}
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(20px, -30px, 0) scale(1.08); }
+}
+
+/* ── Page shell ── */
 .jewelry-page {
   position: relative;
   min-height: 100dvh;
   overflow-x: hidden;
-  background: #0d0b09;
+  padding: 2.5rem 1.25rem 3.5rem;
+}
+@media (min-width: 768px) {
+  .jewelry-page { padding: 3.5rem 2rem 4.5rem; }
 }
 
-/* ── Ambient background ── */
 .jewelry-ambient {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
 }
-
 .ambient-orb {
   position: absolute;
   border-radius: 50%;
   filter: blur(90px);
+  opacity: 0.5;
+  animation: drift 20s ease-in-out infinite alternate;
+}
+.orb-1 {
+  width: 520px; height: 520px;
+  top: -220px; left: -120px;
+  background: radial-gradient(circle, rgba(212, 175, 90, 0.14) 0%, transparent 70%);
+}
+.orb-2 {
+  width: 420px; height: 420px;
+  bottom: -160px; right: -140px;
+  background: radial-gradient(circle, rgba(212, 175, 90, 0.08) 0%, transparent 70%);
+  animation-duration: 26s;
+  animation-direction: alternate-reverse;
 }
 
-.ambient-orb.orb-1 {
-  width: 700px; height: 500px;
-  top: -200px; left: 50%;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(201,168,76,.07) 0%, transparent 70%);
-  animation: orb-drift 20s ease-in-out infinite alternate;
-  opacity: .6;
-}
-.ambient-orb.orb-2 {
-  width: 450px; height: 450px;
-  bottom: 5%; right: -120px;
-  background: radial-gradient(circle, rgba(201,168,76,.04) 0%, transparent 70%);
-  opacity: .4;
-}
-.ambient-orb.orb-3 {
-  width: 350px; height: 350px;
-  bottom: 20%; left: -100px;
-  background: radial-gradient(circle, rgba(148,109,56,.04) 0%, transparent 70%);
-  opacity: .3;
-}
-
-.grain-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: .035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 256px;
-}
-
-/* ── Decorative rings — hidden (used from jewelry.css) ── */
-.jewelry-rings { display: none; }
-
-/* ── Edge accent lines ── */
-.top-line, .bot-line {
-  position: fixed;
-  left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,.4) 40%, rgba(201,168,76,.4) 60%, transparent 100%);
-  z-index: 10;
-  opacity: .3;
-}
-.top-line { top: 0; }
-.bot-line { bottom: 0; }
-
-/* ══════════════════════════════════════════════
-   CONTENT WRAPPER — tight, no wasted space
-══════════════════════════════════════════════ */
 .jewelry-content {
   position: relative;
-  z-index: 5;
-  width: 100%;
-  margin: 0;
-  padding: 0 20px 40px;
+  z-index: 2;
+  max-width: 68rem;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 1.75rem;
 }
 
-/* ══════════════════════════════════════════════
-   HEADER — compact hero
-══════════════════════════════════════════════ */
+/* ── Header ── */
 .jewelry-header {
-  position: relative;
-  text-align: center;
-  padding: 28px 0 18px;
-  animation: fade-up .6s ease both;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: fade-up 0.7s ease both;
 }
-
-.logo-halo {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 180px; height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,168,76,.1) 0%, transparent 70%);
-  pointer-events: none;
-  animation: halo-pulse 4s ease-in-out infinite;
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
-
-.brand-logo-wrap {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 0 16px rgba(201,168,76,.28)) drop-shadow(0 0 4px rgba(201,168,76,.12));
-  animation: logo-entrance .9s cubic-bezier(.22,1,.36,1) both;
+.brand-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
-
-.brand-logo {
-  width: clamp(80px, 10vw, 110px);
-  height: auto;
-  display: block;
-}
-
-.brand-tagline {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: .32em;
-  color: rgba(90,78,56,.9);
+.brand-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  margin-bottom: 6px;
-  animation: fade-up 1s .25s ease both;
+  color: var(--gold);
+}
+.brand-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.05;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold) 55%, var(--gold-dim));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.brand-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  max-width: 34rem;
+  line-height: 1.5;
 }
 
-.hero-title {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(1.4rem, 3.5vw, 2.5rem);
-  font-weight: 500;
-  letter-spacing: .03em;
-  color: #e8dfc8;
-  line-height: 1.15;
-  margin-bottom: 6px;
-  animation: fade-up 1s .3s ease both;
-}
-
-.hero-subtitle {
-  font-size: clamp(.82rem, 1.3vw, .95rem);
-  color: rgba(168,152,120,.75);
-  max-width: 560px;
-  margin: 0 auto;
-  line-height: 1.6;
-  animation: fade-up 1s .4s ease both;
-}
-
-/* ══════════════════════════════════════════════
-   LIVE BADGE (timestamp / live indicator)
-══════════════════════════════════════════════ */
+/* ── Live badge ── */
 .live-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: 'Cinzel', serif;
-  font-size: 8px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: rgba(201,168,76,.7);
-  border: .5px solid rgba(201,168,76,.18);
-  border-radius: 20px;
-  padding: 4px 12px;
-  margin-top: 10px;
-  animation: fade-up 1s .5s ease both;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
 }
 .live-dot {
-  width: 5px; height: 5px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #5aae7a;
-  box-shadow: 0 0 6px #5aae7a;
-  animation: border-shimmer 2s ease-in-out infinite;
+  background: var(--up);
+  animation: pulse-dot 2s ease-in-out infinite;
 }
+.live-badge.is-fallback .live-dot { background: var(--gold); animation: none; }
+.live-badge.is-error .live-dot { background: var(--down); animation: none; }
+.live-badge strong { color: var(--text-primary); font-weight: 600; }
 
-/* ══════════════════════════════════════════════
-   DIVIDER
-══════════════════════════════════════════════ */
-.jewelry-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 14px 0 18px;
-  animation: fade-up 1s .5s ease both;
-  opacity: .6;
-}
-.jewelry-divider.footer-div { margin: 20px 0 14px; opacity:.4; }
-
-.div-line { flex:1; height:.5px; background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent); }
-.div-diamond {
-  width: 7px; height: 7px;
-  border: .5px solid rgba(201,168,76,.7);
-  transform: rotate(45deg);
-  flex-shrink: 0;
-  box-shadow: 0 0 6px rgba(201,168,76,.2);
-}
-.div-diamond.sm { width:4px; height:4px; }
-
-/* ══════════════════════════════════════════════
-   PRICE GRID — elegant 2x2 layout
-══════════════════════════════════════════════ */
-.price-section {
-  animation: fade-up .7s .5s ease both;
-  margin-bottom: 32px;
-}
-
-.price-grid-container {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-  padding: 0;
-}
-
-.price-grid-container .gold-price-card {
-  flex: 1;
-  min-width: 0;
-}
-
-@media (max-width: 768px) {
-  .price-grid-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 0 14px;
-  }
-  
-  .price-grid-container .gold-price-card {
-    min-width: auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .price-grid-container {
-    gap: 14px;
-    padding: 0 10px;
-  }
-}
-
-/* ══════════════════════════════════════════════
-   CALCULATOR SECTION — centered and enhanced
-══════════════════════════════════════════════ */
-.calc-section {
-  animation: fade-up .7s .7s ease both;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-@media (max-width: 768px) {
-  .calc-section {
-    padding: 0;
-  }
-}
-
-/* ══════════════════════════════════════════════
-   ERROR STATE
-══════════════════════════════════════════════ */
-.jewelry-error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  text-align: center;
-  padding: 40px 24px;
-  font-size: 13px;
-  color: rgba(168,152,120,.7);
-  line-height: 1.7;
-  animation: fade-up .8s ease both;
-}
-.error-icon { font-size: 24px; color: rgba(122,106,74,.8); display:block; }
-
-/* ══════════════════════════════════════════════
-   FOOTER
-══════════════════════════════════════════════ */
-.jewelry-footer {
-  text-align: center;
-  padding: 16px 0 12px;
-  animation: fade-up 1s 1s ease both;
-  border-top: .5px solid rgba(201,168,76,.1);
-  margin-top: 12px;
-}
-
-.footer-badge {
-  display: inline-block;
-  font-family: 'Cinzel', serif;
-  font-size: 8px;
-  letter-spacing: .3em;
-  text-transform: uppercase;
-  color: rgba(90,78,56,.8);
-  border: .5px solid rgba(90,78,56,.3);
-  border-radius: 3px;
-  padding: 3px 10px;
-  margin-bottom: 8px;
-}
-
-.footer-title {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: rgba(122,106,74,.8);
-  margin-bottom: 5px;
-}
-
-.footer-body {
-  font-size: 11px;
-  color: rgba(58,50,37,.9);
-  line-height: 1.7;
-  max-width: 340px;
-  margin: 0 auto 8px;
-  font-style: italic;
-}
-
-.footer-brand {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 16px;
-  font-weight: 300;
-  letter-spacing: .22em;
-  color: rgba(122,106,74,.65);
-}
-
-/* ══════════════════════════════════════════════
-   PRICE CARD — enhanced dark luxury style
-══════════════════════════════════════════════ */
-.gold-price-card {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1a1510 0%, #141008 100%);
-  border: .5px solid rgba(201,168,76,.16);
-  border-radius: 16px;
-  padding: 24px;
-  transition: all .3s cubic-bezier(.4, 0, .2, 1);
-  box-shadow: 0 4px 20px rgba(0,0,0,.3);
-}
-.gold-price-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,.3), transparent);
-}
-.gold-price-card:hover {
-  border-color: rgba(201,168,76,.4);
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 0 30px rgba(201,168,76,.15);
-}
-
-.gold-price-card .karat-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: .4em;
-  text-transform: uppercase;
-  color: rgba(201,168,76,.65);
-  margin-bottom: 12px;
-  font-weight: 500;
-}
-
-.gold-price-card .karat-value {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(32px, 4vw, 40px);
-  font-weight: 400;
-  color: #e8dfc8;
-  line-height: 1;
-  letter-spacing: .02em;
-  text-shadow: 0 2px 4px rgba(0,0,0,.3);
-}
-
-.gold-price-card .price-row {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: rgba(0,0,0,.4);
-  border-radius: 10px;
-  border: .5px solid rgba(201,168,76,.15);
-  backdrop-filter: blur(10px);
-}
-
-.gold-price-card .price-row + .price-row { margin-top: 6px; }
-
-.gold-price-card .price-unit {
-  font-size: 9px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(168,152,120,.55);
-  margin-bottom: 2px;
-}
-
-.gold-price-card .price-amount {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(22px, 3vw, 26px);
-  font-weight: 400;
-  color: rgba(201,168,76,.95);
-  line-height: 1.2;
-  text-shadow: 0 1px 2px rgba(0,0,0,.2);
-}
-
-/* ══════════════════════════════════════════════
-   CALCULATOR — enhanced dark luxury
-══════════════════════════════════════════════ */
-.calc-wrapper {
-  background: linear-gradient(135deg, #131008 0%, #0f0d07 100%);
-  border: .5px solid rgba(201,168,76,.18);
-  border-radius: 16px;
-  padding: 28px 32px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,.4);
-}
-.calc-wrapper::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,.22), transparent);
-}
-
-.calc-title {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .35em;
-  text-transform: uppercase;
-  color: rgba(201,168,76,.55);
-  margin-bottom: 4px;
-}
-
-.calc-heading {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(24px, 4vw, 28px);
-  font-weight: 400;
-  color: #e8dfc8;
-  margin-bottom: 6px;
-  letter-spacing: .02em;
-  text-shadow: 0 2px 4px rgba(0,0,0,.3);
-}
-
-.calc-sub {
-  font-size: 12px;
-  color: rgba(168,152,120,.6);
-  margin-bottom: 16px;
-}
-
-.calc-fields-grid {
+/* ── Price grid ── */
+.price-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  animation: fade-up 0.8s 0.1s ease both;
+}
+@media (max-width: 720px) {
+  .price-grid { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 1024px) {
-  .calc-fields-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.price-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  padding: 1.35rem 1.4rem;
+  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
 }
-
-@media (max-width: 640px) {
-  .calc-fields-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
+.price-card:hover {
+  border-color: var(--border-gold);
+  background: var(--bg-card-hover);
+  transform: translateY(-3px);
 }
-
-.calc-field label {
-  display: block;
-  font-size: 9px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(168,152,120,.6);
-  margin-bottom: 5px;
+.price-card.is-updated {
+  animation: shimmer-flash 1.2s ease;
 }
-
-.calc-select,
-.calc-input {
-  width: 100%;
-  background: rgba(0,0,0,.5);
-  border: .5px solid rgba(201,168,76,.18);
-  border-radius: 10px;
-  color: #e8dfc8;
-  font-family: 'Jost', sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  padding: 12px 16px;
-  outline: none;
-  transition: all .3s cubic-bezier(.4, 0, .2, 1);
-  backdrop-filter: blur(10px);
-}
-.calc-select:focus,
-.calc-input:focus {
-  border-color: rgba(201,168,76,.5);
-  box-shadow: 0 0 0 3px rgba(201,168,76,.1), 0 0 20px rgba(201,168,76,.08);
-  background: rgba(0,0,0,.6);
-}
-.calc-select option { background: #131008; color: #e8dfc8; }
-
-/* Extra charges */
-.extra-charges-header {
+.price-card__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 0.9rem;
 }
-.extra-charges-label {
-  font-size: 9px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(168,152,120,.55);
+.price-card__carat {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
-.btn-add-charge {
+.price-card__trend {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-family: 'Jost', sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: .06em;
-  color: rgba(201,168,76,.75);
-  border: .5px solid rgba(201,168,76,.2);
-  border-radius: 6px;
-  padding: 5px 12px;
-  background: transparent;
-  cursor: pointer;
-  transition: border-color .2s, color .2s, background .2s;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
 }
-.btn-add-charge:hover {
-  border-color: rgba(201,168,76,.45);
-  color: rgba(201,168,76,1);
-  background: rgba(201,168,76,.04);
+.price-card__trend.up { color: var(--up); background: rgba(74, 222, 128, 0.12); }
+.price-card__trend.down { color: var(--down); background: rgba(248, 113, 113, 0.12); }
+.price-card__trend.flat { color: var(--text-muted); background: rgba(255, 255, 255, 0.05); }
+
+.price-card__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--border);
 }
+.price-card__row:first-of-type { border-top: none; }
+.price-card__label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.price-card__value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Calculator ── */
+.calc-wrapper {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  padding: 1.75rem 1.6rem;
+  animation: fade-up 0.9s 0.2s ease both;
+}
+.calc-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.calc-subtitle {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.calc-grid {
+  margin-top: 1.35rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+@media (max-width: 640px) {
+  .calc-grid { grid-template-columns: 1fr; }
+}
+.calc-field label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.calc-select,
+.calc-input {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  padding: 0.65rem 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.calc-select:focus,
+.calc-input:focus { border-color: var(--gold); }
+.calc-select option { background: var(--bg-surface); }
+
+.charges-head {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.charges-head p { font-size: 0.85rem; font-weight: 600; }
+.btn-ghost {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-gold);
+  background: rgba(212, 175, 90, 0.08);
+  color: var(--gold-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  transition: background 0.2s;
+}
+.btn-ghost:hover { background: rgba(212, 175, 90, 0.18); }
 
 .charge-row {
+  margin-top: 0.6rem;
   display: grid;
-  grid-template-columns: 1fr 180px 80px;
-  gap: 8px;
-  margin-bottom: 8px;
+  grid-template-columns: 1fr 160px 72px;
+  gap: 0.5rem;
+}
+@media (max-width: 640px) {
+  .charge-row { grid-template-columns: 1fr; }
 }
 .btn-remove {
-  background: rgba(180,40,40,.08);
-  border: .5px solid rgba(180,40,40,.2);
-  border-radius: 6px;
-  color: rgba(200,100,100,.7);
-  font-family: 'Jost', sans-serif;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+  color: #fca5a5;
+  font-size: 0.82rem;
+  transition: background 0.2s;
 }
-.btn-remove:hover {
-  background: rgba(180,40,40,.15);
-  color: rgba(230,120,120,.9);
+.btn-remove:hover { background: rgba(248, 113, 113, 0.16); }
+
+.calc-result {
+  margin-top: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-gold);
+  background: linear-gradient(135deg, rgba(212, 175, 90, 0.08), rgba(212, 175, 90, 0.02));
+  padding: 1.1rem 1.25rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+.calc-result__total {
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold-light);
 }
 
-.no-charges-msg {
-  font-size: 11px;
-  color: rgba(90,78,56,.8);
-  font-style: italic;
-  padding: 6px 0;
+/* ── Source info ── */
+.source-info {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 1.1rem 1.3rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  animation: fade-up 1s 0.3s ease both;
+}
+.source-info a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
+.source-info strong { color: var(--text-primary); }
+
+/* ── Error state ── */
+.jewelry-error {
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  background: rgba(80, 20, 20, 0.2);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  font-size: 0.9rem;
+  color: #fca5a5;
+  animation: fade-up 0.8s ease both;
 }
 
-/* Result panel */
-.calc-result-panel {
-  margin-top: 20px;
-  padding: 20px 24px;
-  background: rgba(0,0,0,.4);
-  border: .5px solid rgba(201,168,76,.25);
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  box-shadow: inset 0 1px 0 rgba(201,168,76,.1);
+/* ── Footer ── */
+.jewelry-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  text-align: center;
+  animation: fade-up 1s 0.4s ease both;
 }
-.calc-result-panel::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,.35), transparent);
-  animation: border-shimmer 3s ease-in-out infinite;
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.08em;
 }
-
-.calc-breakdown {
-  font-size: 12px;
-  color: rgba(168,152,120,.65);
-  line-height: 1.9;
-}
-.calc-breakdown span { color: rgba(201,168,76,.8); }
-
-.calc-total-label {
-  font-family: 'Cinzel', serif;
-  font-size: 8px;
-  letter-spacing: .3em;
-  text-transform: uppercase;
-  color: rgba(168,152,120,.55);
-  margin-top: 12px;
+.footer-body {
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  max-width: 30rem;
+  margin-inline: auto;
+  line-height: 1.6;
 }
 
-.calc-total-value {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(32px, 5vw, 42px);
-  font-weight: 400;
-  color: rgba(201,168,76,.95);
-  line-height: 1.1;
-  letter-spacing: .02em;
-  animation: glow-pulse 3s ease-in-out infinite;
-  text-shadow: 0 2px 8px rgba(0,0,0,.4);
-}
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: rgba(212, 175, 90, 0.25); border-radius: 2px; }
 
-.btn-download {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 14px;
-  padding: 10px 22px;
-  background: linear-gradient(135deg, rgba(201,168,76,.15) 0%, rgba(201,168,76,.08) 100%);
-  border: .5px solid rgba(201,168,76,.35);
-  border-radius: 8px;
-  color: rgba(201,168,76,.9);
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background .2s, border-color .2s, box-shadow .2s;
-}
-.btn-download:hover {
-  background: linear-gradient(135deg, rgba(201,168,76,.25) 0%, rgba(201,168,76,.15) 100%);
-  border-color: rgba(201,168,76,.6);
-  box-shadow: 0 0 20px rgba(201,168,76,.12);
-}
-
-/* ══════════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════════ */
-@media (min-width: 1400px) {
-  .jewelry-content { padding: 0 60px 40px; }
-}
-
-@media (min-width: 1800px) {
-  .jewelry-content { padding: 0 80px 40px; }
-}
-
-@media (max-width: 700px) {
-  .jewelry-content { padding: 0 14px 32px; gap: 0; }
-  .calc-fields-grid { grid-template-columns: 1fr; }
-  .charge-row { grid-template-columns: 1fr 140px 70px; }
-  .hero-title { font-size: 1.6rem; }
-  .brand-logo { width: 80px; }
-  .jewelry-header { padding: 20px 0 14px; }
-}
-
-@media (max-width: 480px) {
-  .charge-row { grid-template-columns: 1fr; }
-  .calc-fields-grid { grid-template-columns: 1fr; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }

@@ -1,23 +1,29 @@
 import type { GoldPriceItem } from "@/types/gold";
 
+type Trend = "up" | "down" | "flat";
+
 type GoldPriceCardProps = {
   item: GoldPriceItem;
+  trend?: Trend;
+  justUpdated?: boolean;
 };
 
-export function GoldPriceCard({ item }: GoldPriceCardProps) {
+export function GoldPriceCard({ item, trend = "flat", justUpdated = false }: GoldPriceCardProps) {
+  const trendLabel = trend === "up" ? "▲ Up" : trend === "down" ? "▼ Down" : "— Steady";
+
   return (
-    <article className="gold-price-card">
-      <p className="karat-label">Gold Purity</p>
-      <h3 className="karat-value">{item.carat}</h3>
-
-      <div className="price-row">
-        <p className="price-unit">1 Gram</p>
-        <p className="price-amount">LKR {item.gram.toLocaleString()}</p>
+    <article className={`price-card${justUpdated ? " is-updated" : ""}`}>
+      <div className="price-card__top">
+        <span className="price-card__carat">{item.carat}</span>
+        <span className={`price-card__trend ${trend}`}>{trendLabel}</span>
       </div>
-
-      <div className="price-row">
-        <p className="price-unit">1 Pawn (8g)</p>
-        <p className="price-amount">LKR {item.pawn.toLocaleString()}</p>
+      <div className="price-card__row">
+        <span className="price-card__label">1 Gram</span>
+        <span className="price-card__value">LKR {item.gram.toLocaleString()}</span>
+      </div>
+      <div className="price-card__row">
+        <span className="price-card__label">1 Pawn (8g)</span>
+        <span className="price-card__value">LKR {item.pawn.toLocaleString()}</span>
       </div>
     </article>
   );
